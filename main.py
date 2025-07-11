@@ -61,7 +61,7 @@ async def update_status_message_now():
             msg async for msg in channel.history(limit=20)
             if not msg.author.bot
         ]
-        status = "❌ Active Razz" if messages else "🤑 Free to use"
+        status = "❌ Active Razz" if messages else "✅ Free to use"
         lines.append(f"<#{channel.id}> : {status}")
 
     summary = "**📊 Razz Status:**\n\n" + "\n".join(lines)
