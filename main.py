@@ -89,10 +89,10 @@ async def update_status_message():
             msg async for msg in channel.history(limit=20)
             if not msg.author.bot
         ]
-        status = "✅ Occupied" if messages else "⚠️ Empty"
-        lines.append(f"<#{channel.id}> ({channel.name}): {status}")
+        status = "✅ Active Razz" if messages else "⚠️ Free to use"
+        lines.append(f"<#{channel.id}> : {status}")
 
-    summary = "**📊 Razz Monitoring Status:**\n\n" + "\n".join(lines)
+    summary = "**📊 Razz Status:**\n\n" + "\n".join(lines)
 
     # Only update if changed
     if summary == last_summary:
