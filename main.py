@@ -1,6 +1,5 @@
 import os
 import json
-import difflib
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -37,13 +36,11 @@ def save_status_message_id(msg_id):
     with open(STATUS_MESSAGE_FILE, "w") as f:
         json.dump({"status_message_id": msg_id}, f)
 
-# Fuzzy matching to find a channel by name
-def find_channel_by_fuzzy_name(guild, fuzzy_name, cutoff=0.6):
-    channel_names = {channel.name: channel for channel in guild.text_channels}
-    matches = difflib.get_close_matches(fuzzy_name.lower(), [name.lower() for name in channel_names], n=1, cutoff=cutoff)
-    if matches:
-        matched_name = next(name for name in channel_names if name.lower() == matches[0])
-        return channel_names[matched_name]
+# Exact match for channel name
+def find_channel_by_name(guild, name):
+    for channel in guild.text_channels:
+        if channel.name == name:
+            return channel
     return None
 
 # Update status message now
@@ -95,14 +92,14 @@ async def on_ready():
 
     monitor_channels = []
     for name in monitor_channel_names:
-        ch = find_channel_by_fuzzy_name(guild, name)
+        ch = find_channel_by_name(guild, name)
         if ch:
             monitor_channels.append(ch)
             print(f"✔️ Matched: {name} → {ch.name}")
         else:
             print(f"❌ No match for: {name}")
 
-    status_channel = find_channel_by_fuzzy_name(guild, status_channel_name)
+    status_channel = find_channel_by_name(guild, status_channel_name)
     if not status_channel:
         print(f"❌ Could not match status channel: {status_channel_name}")
         return
